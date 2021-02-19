@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <title>
-    流量扫描器（2 越权篇） |
+    Apollo配置错误（cve-2020-15170） |
     
     freedom</title>
   
@@ -30,7 +30,7 @@
 <body>
   <main class="content">
     <section class="outer">
-  <article id="post-TPWeY2nYICLa53ZM" class="article article-type-post" itemscope
+  <article id="post-YzXchfsVWbIV8MqD" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
   <div class="article-inner">
@@ -39,7 +39,7 @@
       
 
 <h1 class="article-title" itemprop="name">
-  流量扫描器（2 越权篇）
+  Apollo配置错误（cve-2020-15170）
 </h1>
 
 
@@ -49,8 +49,8 @@
 
     
     <div class="article-meta">
-      <a href="/2020/12/01/tpwey2nyicla53zm/" class="article-date">
-  <time datetime="2020-12-01T08:09:03.637Z" itemprop="datePublished">2020-12-01</time>
+      <a href="/2021/01/15/yzxchfsvwbiv8mqd/" class="article-date">
+  <time datetime="2021-01-15T02:52:11.143Z" itemprop="datePublished">2021-01-15</time>
 </a>
       
     </div>
@@ -64,16 +64,17 @@
       
       
       
-      <p><strong>1，整体介绍</strong><br>   越权主要分为未授权，平行越权，垂直越权。<br>我这个越权检测也是基于那个流量型扫描器而来的，流量都是来源于浏览器的流量。越权检测与漏洞检测是分开的，做成了两个模块。因为越权检测与漏洞检测有很大的区别，漏洞检测的流量可以来自不同的地方，比如交换机等等，可以是杂乱无章的；而越权检测是基于不同权限来检测的，不同网站的权限系统是不同的，所以就需要对流量进行划分，对某个网站进行单点检测。<br>首先在设计上，把流量存入mongodb中，存入之前先经过redis进行去重，具体流程如下：<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/Z%7E%25CW_0IT_S88NVIXPPL%60QW.png?token=AK6KMXBLEIAUF7VLISPFSGC7YXXT6"></p>
-<p>基本上，整体流程就是像上面这样的。</p>
-<p><strong>2，去重</strong><br>   其实越权这个去重和漏洞检测那个去重是类似的，毕竟是用同一个浏览器插件来获取的流量。在后端去重之前，可以把一些静态流量在插件这一部分过滤掉，这一步没啥还说的。而在后端过滤去重越权与漏洞检测还是有些许不同的，但是这些链接必须做归一化处理，保证url的格式都是一样的。<br>首先在漏洞检测方面，是根据一个完整的路径来去重，比如：http:<a target="_blank" rel="noopener" href="http://www.baidu.com/4.php?a=1&amp;b=1">www.baidu.com/4.php?a=1&amp;b=1</a> ,去重的判断不仅有接口地址，还有请求参数，换句话说，就是整个地址。但是在判断时，需要把请求参数进行处理，只保留键，而不保留值，比如上面那个地址就变为：http:<a target="_blank" rel="noopener" href="http://www.baidu.com/4.php?a&amp;b">www.baidu.com/4.php?a&amp;b</a> ，后面的值就去掉，post请求类似；对于越权模块来说，一个网站接口的权限肯定是一致的，所以在做去重时就没必要把请求参数加进来了。<br>   另一点去重的地点也不一样，漏洞检测去重是在上述的第二部进行的，就是先检测redis中有没有记录，没有在把这个记录加上。而对于越权，则是在第五步进行处理，就是处理了这条流量，再把这条流量的记录加进redis中。导致这一区别的就是，对于漏洞检测来说，只要进了队列，这些流量就都会被处理。而越权模块则不同，你就算进了队列，也还要把相应流量对应的网站的权限配置了，才会处理这条流量，这个其实在前面就说了，每个网站的权限认证字段不同，必须要根据你配置了那个网站，就说明要处理那个网站来进行检测。</p>
-<p><strong>3，检测</strong><br>   首先需要对要检测的网站加一些规则，比如header字段的cookie，要测试平行越权或者垂直越权，你需要把cookie字段换成其他人的，就需要配置这个cookie字段为其他人的。而之后在进行检测的时候，就是根据这些规则，对流量进行更新重发。<br>    <img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/VMF0N33K%25">LG4J%5D)MFU1AMS.png?token=AK6KMXF3XCJ572R6LCPQU4C7YX33G)</p>
-<pre><code>1，增加删除某个认证字段，在做未授权测试的时候，比如cookie字段，虽然把他置空可以来进行判断，但是有时候把整个cookie认证字段删除会有意想不到的地方，所以就考虑增加这一需求。</code></pre>
+      <p>一，apollo框架<br>guthub地址：<a target="_blank" rel="noopener" href="https://github.com/ctripcorp/apollo%EF%BC%8C%E5%85%B7%E4%BD%93%E5%B0%B1%E6%98%AF%E4%B8%AA%E5%88%86%E5%B8%83%E5%BC%8F%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83%E3%80%82">https://github.com/ctripcorp/apollo，具体就是个分布式配置中心。</a><br>二，安全问题<br>1, 28191端口<br>首先28191端口是一个adminservice端口<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/20200804112409616.png?token=AK6KMXFDTAZKK7MP6A5DW53AF57RA"></p>
+<p>所以在github上找到这个管理端的源代码<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/20200804112601468.png?token=AK6KMXGTLZ42CEMDTTOIDH3AF57TC"><br>代码具体自己看，蛮简单的，大致就是通过一系列迭代得到配置中心的 apps，clusters ，namespaces。<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/20200804112915508.png?token=AK6KMXCSMGOMF3BDIBHR45LAF57UU"></p>
+<p>2,28181端口<br>一般这个都是结合在eureka中配套使用的。<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/20200804113344720.png?token=AK6KMXBT7TBY225ZPK72CELAF57WC"><br>28181端口是个配置中心，对应github上的地址：configservice<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/20200804113843127.png?token=AK6KMXDF5EDJO37UIY6YS6DAF57XM"></p>
+<p>具体代码如上，自己看，也蛮简单的，就是通过三个值可以得到这个节点的数据，而这三个值可以从28191端口中迭代出来，所以完整的攻击链如下：<br>通过28191得到节点信息：<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/2%7D3KV17%7E%5B_Q6J_DFV_MI0%607.png?token=AK6KMXBI2J7E5VXAGUM7BY3AF576O"></p>
+<p>通过28181得到节点存储的具体信息：<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/20200804114429770.png?token=AK6KMXHE7NVU3QBSJPJERNDAF6ABQ"><br>最后只需个脚本即可迭代出所有节点信息。</p>
+<p>上述两个端口号不是固定的，具体实际为准<br>当时影响还是很大的，随便在zoomeye搜了下，基本各种数据库账号密码都可以迭代出来。<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/b5090c9012ee188a2eab833740e90fd5.png?token=AK6KMXDFA4P45KWIYNHN4HTAF6ARY"></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lllllx.top/2020/12/01/tpwey2nyicla53zm/" data-id="cki5pdt6o000054qcgc5k4e43" class="article-share-link">
+      <a data-url="http://lllllx.top/2021/01/15/yzxchfsvwbiv8mqd/" data-id="cklc31f4y0000wwqc551fbg3v" class="article-share-link">
         分享
       </a>
       
@@ -85,19 +86,10 @@
   
 <nav class="article-nav">
   
-  <a href="/2021/01/15/yzxchfsvwbiv8mqd/" class="article-nav-link">
-    <strong class="article-nav-caption">前一篇</strong>
-    <div class="article-nav-title">
-      
-      Apollo配置错误（cve-2020-15170）
-      
-    </div>
-  </a>
   
-  
-  <a href="/2020/11/28/elwnzy2upmnwygvd/" class="article-nav-link">
+  <a href="/2020/12/01/tpwey2nyicla53zm/" class="article-nav-link">
     <strong class="article-nav-caption">后一篇</strong>
-    <div class="article-nav-title">流量扫描器(3 插件篇）</div>
+    <div class="article-nav-title">流量扫描器（2 越权篇）</div>
   </a>
   
 </nav>
