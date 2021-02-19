@@ -94,7 +94,26 @@
       
       
       
-      <p>一，apollo框架<br>guthub地址：<a target="_blank" rel="noopener" href="https://github.com/ctripcorp/apollo%EF%BC%8C%E5%85%B7%E4%BD%93%E5%B0%B1%E6%98%AF%E4%B8%AA%E5%88%86%E5%B8%83%E5%BC%8F%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83%E3%80%82">https://github.com/ctripcorp/apollo，具体就是个分布式配置中心。</a><br>二，安全问题<br>1, 28191端口<br>首先28191端口是一个adminservice端口</p>
+      一，apollo框架
+guthub地址：https://github.com/ctripcorp/apollo，具体就是个分布式配置中心。
+二，安全问题
+1, 28191端口
+首先28191端口是一个adminservice端口
+
+
+
+所以在github上找到这个管理端的源代码
+
+代码具体自己看，蛮简单的，大致就是通过一系列迭代得到配置中心的 apps，clusters ，namespaces。
+
+
+2,28181端口
+一般这个都是结合在eureka中配套使用的。
+
+28181端口是个配置中心，对应github上的地址：configservice
+
+
+具体代码如上，自己看，也蛮简单的，就是通过
       
       <a class="article-more-link" href="/2021/01/15/yzxchfsvwbiv8mqd/">
         阅读全文...
@@ -103,7 +122,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lllllx.top/2021/01/15/yzxchfsvwbiv8mqd/" data-id="cklc4i58r0005koqc2duf4f12" class="article-share-link">
+      <a data-url="http://lllllx.top/2021/01/15/yzxchfsvwbiv8mqd/" data-id="cklc4y1q90005u4qcdyd1fucz" class="article-share-link">
         分享
       </a>
       
@@ -149,7 +168,17 @@
       
       
       
-      <p><strong>1，整体介绍</strong><br>   越权主要分为未授权，平行越权，垂直越权。<br>我这个越权检测也是基于那个流量型扫描器而来的，流量都是来源于浏览器的流量。越权检测与漏洞检测是分开的，做成了两个模块。因为越权检测与漏洞检测有很大的区别，漏洞检测的流量可以来自不同的地方，比如交换机等等，可以是杂乱无章的；而越权检测是基于不同权限来检测的，不同网站的权限系统是不同的，所以就需要对流量进行划分，对某个网站进行单点检测。<br>首先在设计上，把流量存入mongodb中，存入之前先经过redis进行去重，具体流程如下：</p>
+      1，整体介绍
+越权主要分为未授权，平行越权，垂直越权。
+我这个越权检测也是基于那个流量型扫描器而来的，流量都是来源于浏览器的流量。越权检测与漏洞检测是分开的，做成了两个模块。因为越权检测与漏洞检测有很大的区别，漏洞检测的流量可以来自不同的地方，比如交换机等等，可以是杂乱无章的；而越权检测是基于不同权限来检测的，不同网站的权限系统是不同的，所以就需要对流量进行划分，对某个网站进行单点检测。
+首先在设计上，把流量存入mongodb中，存入之前先经过redis进行去重，具体流程如下：
+
+
+
+基本上，整体流程就是像上面这样的。
+
+2，去重
+其实越权这个去重和漏洞检测那个去重是类似的，毕竟是用同一个浏览
       
       <a class="article-more-link" href="/2020/12/01/tpwey2nyicla53zm/">
         阅读全文...
@@ -158,7 +187,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lllllx.top/2020/12/01/tpwey2nyicla53zm/" data-id="cklc4i58p0003koqc349j2ubd" class="article-share-link">
+      <a data-url="http://lllllx.top/2020/12/01/tpwey2nyicla53zm/" data-id="cklc4y1q70003u4qcdyvebkhv" class="article-share-link">
         分享
       </a>
       
@@ -208,7 +237,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lllllx.top/2020/11/28/elwnzy2upmnwygvd/" data-id="cklc4i58u000akoqc9o6rcxs1" class="article-share-link">
+      <a data-url="http://lllllx.top/2020/11/28/elwnzy2upmnwygvd/" data-id="cklc4y1qc0009u4qch0q3as71" class="article-share-link">
         分享
       </a>
       
@@ -254,7 +283,22 @@
       
       
       
-      <p><strong>弱密码：</strong><br>1.海康威视IP网络摄像机：<br>用户：admin，密码：12345<br>zoomeye搜索关键词：hikvision<br>2.大华网络摄像机：</p>
+      弱密码：
+1.海康威视IP网络摄像机：
+用户：admin，密码：12345
+zoomeye搜索关键词：hikvision
+2.大华网络摄像机：
+
+user:admin pass:admin 管理权限
+user:default pass:user 用户默认登陆帐号
+user:888888 pass:admin
+user:666666 pass:user
+zoomeye搜索关键词：WEB SERVICE
+3.cctv摄像机：
+user：admin pass：空
+telnet登陆 user：root pass：”juantech”
+zoomeye搜索关键词：JAWS/1.0
+4.SQ-WEBCAM摄
       
       <a class="article-more-link" href="/2020/11/28/krjz6onwhraor5q0/">
         阅读全文...
@@ -263,7 +307,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lllllx.top/2020/11/28/krjz6onwhraor5q0/" data-id="cklc4i58s0007koqcgrom830n" class="article-share-link">
+      <a data-url="http://lllllx.top/2020/11/28/krjz6onwhraor5q0/" data-id="cklc4y1qd000au4qc7azu38g2" class="article-share-link">
         分享
       </a>
       
@@ -309,12 +353,17 @@
       
       
       
-      <p>   流量型扫描器也称为被动型扫描器，与主动型不同的是，他不需要向主动型扫描器那样爬取网站，获得网站链接。从名称就可以看出来，它是从别处获得流量，在对这些流量进行扫描的。<br>   个人型扫描器其实网上都有很多，而我们这个却是在甲方用的，为了满足测试人员与安全人员的结合所做的。</p>
-
+      流量型扫描器也称为被动型扫描器，与主动型不同的是，他不需要向主动型扫描器那样爬取网站，获得网站链接。从名称就可以看出来，它是从别处获得流量，在对这些流量进行扫描的。
+个人型扫描器其实网上都有很多，而我们这个却是在甲方用的，为了满足测试人员与安全人员的结合所做的。
+      
+      <a class="article-more-link" href="/2020/11/27/k6oisjkwhp9crhos/">
+        阅读全文...
+      </a>
+      
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lllllx.top/2020/11/27/k6oisjkwhp9crhos/" data-id="cklc4i58t0009koqcccer56y3" class="article-share-link">
+      <a data-url="http://lllllx.top/2020/11/27/k6oisjkwhp9crhos/" data-id="cklc4y1qa0007u4qce33g6qt9" class="article-share-link">
         分享
       </a>
       
@@ -360,9 +409,31 @@
       
       
       
-      <p>国内</p>
-<p>云短信<code>https://www.pdflibr.com</code></p>
-<p>在线短信<code>http://www.smszk.com/</code></p>
+      国内
+
+云短信https://www.pdflibr.com
+
+在线短信http://www.smszk.com/
+
+游客短信https://www.visitorsms.com/cn/
+
+免费接码https://www.becmd.com
+
+接码平台:http://www.114sim.com
+
+云短信https://yunduanxin.net/
+
+免费接码http://z-sms.com
+
+掠影网络:https://zusms.com/receiving-sms
+
+免费接码:https://www.shejiinn.com 
+
+国外
+
+Receive SMS Onl ine
+
+https
       
       <a class="article-more-link" href="/2020/11/26/etdgenlo1piv5h4a/">
         阅读全文...
@@ -371,7 +442,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lllllx.top/2020/11/26/etdgenlo1piv5h4a/" data-id="cklc4i58l0001koqc4swea9d4" class="article-share-link">
+      <a data-url="http://lllllx.top/2020/11/26/etdgenlo1piv5h4a/" data-id="cklc4y1q30001u4qc1bwrauai" class="article-share-link">
         分享
       </a>
       
