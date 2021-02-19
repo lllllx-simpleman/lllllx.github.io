@@ -64,7 +64,9 @@
       
       
       
-      <p><strong>1，整体介绍</strong><br>   越权主要分为未授权，平行越权，垂直越权。<br>我这个越权检测也是基于那个流量型扫描器而来的，流量都是来源于浏览器的流量。越权检测与漏洞检测是分开的，做成了两个模块。因为越权检测与漏洞检测有很大的区别，漏洞检测的流量可以来自不同的地方，比如交换机等等，可以是杂乱无章的；而越权检测是基于不同权限来检测的，不同网站的权限系统是不同的，所以就需要对流量进行划分，对某个网站进行单点检测。<br>首先在设计上，把流量存入mongodb中，存入之前先经过redis进行去重，具体流程如下：<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/Z%7E%25CW_0IT_S88NVIXPPL%60QW.png?token=AK6KMXBLEIAUF7VLISPFSGC7YXXT6"></p>
+      <p><strong>1，整体介绍</strong><br>   越权主要分为未授权，平行越权，垂直越权。<br>我这个越权检测也是基于那个流量型扫描器而来的，流量都是来源于浏览器的流量。越权检测与漏洞检测是分开的，做成了两个模块。因为越权检测与漏洞检测有很大的区别，漏洞检测的流量可以来自不同的地方，比如交换机等等，可以是杂乱无章的；而越权检测是基于不同权限来检测的，不同网站的权限系统是不同的，所以就需要对流量进行划分，对某个网站进行单点检测。<br>首先在设计上，把流量存入mongodb中，存入之前先经过redis进行去重，具体流程如下：</p>
+<a id="more"></a>
+<p><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/Z%7E%25CW_0IT_S88NVIXPPL%60QW.png?token=AK6KMXBLEIAUF7VLISPFSGC7YXXT6"></p>
 <p>基本上，整体流程就是像上面这样的。</p>
 <p><strong>2，去重</strong><br>   其实越权这个去重和漏洞检测那个去重是类似的，毕竟是用同一个浏览器插件来获取的流量。在后端去重之前，可以把一些静态流量在插件这一部分过滤掉，这一步没啥还说的。而在后端过滤去重越权与漏洞检测还是有些许不同的，但是这些链接必须做归一化处理，保证url的格式都是一样的。<br>首先在漏洞检测方面，是根据一个完整的路径来去重，比如：http:<a target="_blank" rel="noopener" href="http://www.baidu.com/4.php?a=1&amp;b=1">www.baidu.com/4.php?a=1&amp;b=1</a> ,去重的判断不仅有接口地址，还有请求参数，换句话说，就是整个地址。但是在判断时，需要把请求参数进行处理，只保留键，而不保留值，比如上面那个地址就变为：http:<a target="_blank" rel="noopener" href="http://www.baidu.com/4.php?a&amp;b">www.baidu.com/4.php?a&amp;b</a> ，后面的值就去掉，post请求类似；对于越权模块来说，一个网站接口的权限肯定是一致的，所以在做去重时就没必要把请求参数加进来了。<br>   另一点去重的地点也不一样，漏洞检测去重是在上述的第二部进行的，就是先检测redis中有没有记录，没有在把这个记录加上。而对于越权，则是在第五步进行处理，就是处理了这条流量，再把这条流量的记录加进redis中。导致这一区别的就是，对于漏洞检测来说，只要进了队列，这些流量就都会被处理。而越权模块则不同，你就算进了队列，也还要把相应流量对应的网站的权限配置了，才会处理这条流量，这个其实在前面就说了，每个网站的权限认证字段不同，必须要根据你配置了那个网站，就说明要处理那个网站来进行检测。</p>
 <p><strong>3，检测</strong><br>   首先需要对要检测的网站加一些规则，比如header字段的cookie，要测试平行越权或者垂直越权，你需要把cookie字段换成其他人的，就需要配置这个cookie字段为其他人的。而之后在进行检测的时候，就是根据这些规则，对流量进行更新重发。<br>    <img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/VMF0N33K%25">LG4J%5D)MFU1AMS.png?token=AK6KMXF3XCJ572R6LCPQU4C7YX33G)</p>
