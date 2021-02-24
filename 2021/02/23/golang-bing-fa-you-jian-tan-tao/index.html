@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <title>
-    Apollo配置错误（cve-2020-15170） |
+    钓鱼时邮件如何批量发送 |
     
     freedom</title>
   
@@ -30,7 +30,7 @@
 <body>
   <main class="content">
     <section class="outer">
-  <article id="post-YzXchfsVWbIV8MqD" class="article article-type-post" itemscope
+  <article id="post-golang-并发邮件探讨" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
   <div class="article-inner">
@@ -39,7 +39,7 @@
       
 
 <h1 class="article-title" itemprop="name">
-  Apollo配置错误（cve-2020-15170）
+  钓鱼时邮件如何批量发送
 </h1>
 
 
@@ -49,8 +49,8 @@
 
     
     <div class="article-meta">
-      <a href="/2021/01/15/yzxchfsvwbiv8mqd/" class="article-date">
-  <time datetime="2021-01-15T02:52:11.143Z" itemprop="datePublished">2021-01-15</time>
+      <a href="/2021/02/23/golang-bing-fa-you-jian-tan-tao/" class="article-date">
+  <time datetime="2021-02-23T10:29:32.959Z" itemprop="datePublished">2021-02-23</time>
 </a>
       
     </div>
@@ -64,19 +64,15 @@
       
       
       
-      <p>一，apollo框架<br>guthub地址：<a target="_blank" rel="noopener" href="https://github.com/ctripcorp/apollo%EF%BC%8C%E5%85%B7%E4%BD%93%E5%B0%B1%E6%98%AF%E4%B8%AA%E5%88%86%E5%B8%83%E5%BC%8F%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83%E3%80%82">https://github.com/ctripcorp/apollo，具体就是个分布式配置中心。</a><br>二，安全问题<br>1, 28191端口<br>首先28191端口是一个adminservice端口</p>
-<a id="more"></a>
-<p><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/20200804112409616.png?token=AK6KMXFDTAZKK7MP6A5DW53AF57RA"></p>
-<p>所以在github上找到这个管理端的源代码<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/20200804112601468.png?token=AK6KMXGTLZ42CEMDTTOIDH3AF57TC"><br>代码具体自己看，蛮简单的，大致就是通过一系列迭代得到配置中心的 apps，clusters ，namespaces。<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/20200804112915508.png?token=AK6KMXCSMGOMF3BDIBHR45LAF57UU"></p>
-<p>2,28181端口<br>一般这个都是结合在eureka中配套使用的。<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/20200804113344720.png?token=AK6KMXBT7TBY225ZPK72CELAF57WC"><br>28181端口是个配置中心，对应github上的地址：configservice<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/20200804113843127.png?token=AK6KMXDF5EDJO37UIY6YS6DAF57XM"></p>
-<p>具体代码如上，自己看，也蛮简单的，就是通过三个值可以得到这个节点的数据，而这三个值可以从28191端口中迭代出来，所以完整的攻击链如下：<br>通过28191得到节点信息：<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/2%7D3KV17%7E%5B_Q6J_DFV_MI0%607.png?token=AK6KMXBI2J7E5VXAGUM7BY3AF576O"></p>
-<p>通过28181得到节点存储的具体信息：<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/20200804114429770.png?token=AK6KMXHE7NVU3QBSJPJERNDAF6ABQ"><br>最后只需个脚本即可迭代出所有节点信息。</p>
-<p>上述两个端口号不是固定的，具体实际为准<br>当时影响还是很大的，随便在zoomeye搜了下，基本各种数据库账号密码都可以迭代出来。<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/b5090c9012ee188a2eab833740e90fd5.png?token=AK6KMXDFA4P45KWIYNHN4HTAF6ARY"></p>
+      <p><strong>0x01  困境</strong><br>在做钓鱼邮件时，有时候需要发送的人过多，导致在邮件发送这个过程中花费过多时间。</p>
+<p><strong>0x02 解决思路</strong></p>
+<p>1，第一种可以用如下这种，直接在收件人中实现批量发送，但是有个问题是，这种情况实现批量发送，所有收件人的邮件内容都是一样，这种就不能实现每个人邮件的特殊化（因为需要在邮件中加入tracker，通过这个tracker来跟踪对应收件人对应邮件的状态），所以这种方法目前有问题。<br><code>msg.SetHeader(&quot;Bcc&quot;, mailto...</code></p>
+<p>2，第二种直接就是并发来发送，利用goruntine，每一个收件人对应一个goruntine。这种的问题就是需要自己设置smtp服务器可以接受的连接数，保证客户端到smtp有足够的连接来对应goruntine的数量，否则连接就会重置，造成发送不出去邮件<br>如下所示，activecall参数的解释<br><code>activeCall is an atomic int32; the low bit is whether Close has been called. the rest of the bits are the number of goroutines in Conn.Write.</code><br>为0时，代表连接正常，为1时，代表连接关闭。如果smtp的连接数小于goruntine的数量，就会造成连接关闭，activecall参数为1.<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/20210223200930444.png"><br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/20210223200930444.png"></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lllllx.top/2021/01/15/yzxchfsvwbiv8mqd/" data-id="cklc4y1q90005u4qcdyd1fucz" class="article-share-link">
+      <a data-url="http://lllllx.top/2021/02/23/golang-bing-fa-you-jian-tan-tao/" data-id="cklj7s7i800001wqc1k93c4zm" class="article-share-link">
         分享
       </a>
       
@@ -88,19 +84,10 @@
   
 <nav class="article-nav">
   
-  <a href="/2021/02/23/golang-bing-fa-you-jian-tan-tao/" class="article-nav-link">
-    <strong class="article-nav-caption">前一篇</strong>
-    <div class="article-nav-title">
-      
-      钓鱼时邮件如何批量发送
-      
-    </div>
-  </a>
   
-  
-  <a href="/2020/12/01/tpwey2nyicla53zm/" class="article-nav-link">
+  <a href="/2021/01/15/yzxchfsvwbiv8mqd/" class="article-nav-link">
     <strong class="article-nav-caption">后一篇</strong>
-    <div class="article-nav-title">流量扫描器（2 越权篇）</div>
+    <div class="article-nav-title">Apollo配置错误（cve-2020-15170）</div>
   </a>
   
 </nav>
