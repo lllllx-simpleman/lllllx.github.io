@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <title>
-    自动化钓鱼(1):钓鱼时邮件如何批量发送 |
+    自动化钓鱼（2):文档类追踪 |
     
     freedom</title>
   
@@ -30,7 +30,7 @@
 <body>
   <main class="content">
     <section class="outer">
-  <article id="post-golang-并发邮件探讨" class="article article-type-post" itemscope
+  <article id="post-sY1fGht8q7z0kufG" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
   <div class="article-inner">
@@ -39,7 +39,7 @@
       
 
 <h1 class="article-title" itemprop="name">
-  自动化钓鱼(1):钓鱼时邮件如何批量发送
+  自动化钓鱼（2):文档类追踪
 </h1>
 
 
@@ -49,8 +49,8 @@
 
     
     <div class="article-meta">
-      <a href="/2021/03/26/golang-bing-fa-you-jian-tan-tao/" class="article-date">
-  <time datetime="2021-03-26T09:14:13.000Z" itemprop="datePublished">2021-03-26</time>
+      <a href="/2021/03/26/sy1fght8q7z0kufg/" class="article-date">
+  <time datetime="2021-03-26T09:17:49.044Z" itemprop="datePublished">2021-03-26</time>
 </a>
       
     </div>
@@ -64,15 +64,19 @@
       
       
       
-      <p><strong>0x01  困境</strong><br>在做钓鱼邮件时，有时候需要发送的人过多，导致在邮件发送这个过程中花费过多时间。</p>
-<p><strong>0x02 解决思路</strong></p>
-<p>1，第一种可以用如下这种，直接在收件人中实现批量发送，但是有个问题是，这种情况实现批量发送，所有收件人的邮件内容都是一样，这种就不能实现每个人邮件的特殊化（因为需要在邮件中加入tracker，通过这个tracker来跟踪对应收件人对应邮件的状态），所以这种方法目前有问题。<br><code>msg.SetHeader(&quot;Bcc&quot;, mailto...</code></p>
-<p>2，第二种直接就是并发来发送，利用goruntine，每一个收件人对应一个goruntine。还有两个问题需要注意：<br>1，就是需要自己设置smtp服务器可以接受的连接数，保证客户端到smtp有足够的连接来对应goruntine的数量，否则连接就会重置，造成发送不出去邮件<br>2，如上所示，如果连接数不够，建议分批发送，并且需要后面的一批需要等到前面那一批发送完成，否则连接重置<br>如下所示，activecall参数的解释<br><code>activeCall is an atomic int32; the low bit is whether Close has been called. the rest of the bits are the number of goroutines in Conn.Write.</code><br>为0时，代表连接正常，为1时，代表连接关闭。如果smtp的连接数小于goruntine的数量，就会造成连接关闭，activecall参数为1.<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/20210223200930444.png"><br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/20210223200930444.png"></p>
+      <p>需求：在进行钓鱼演练时，如何追踪哪些人员打开了word文档类，并且开启了宏，如何对这些数据进行追踪（对于网站钓鱼追踪过于简单，不在诉说）<br>解决：<br>插入如下宏，url为自己服务器地址，里面携带了一个rid，每个rid对应了相应的用户，如果服务器收到了相应的相应，就说明点击开启了宏。</p>
+<p>`Sub AutoOpen()</p>
+<p>Set objHTTP = CreateObject(“MSXML2.ServerXMLHTTP”)<br>URL = “url”<br>objHTTP.Open “POST”, URL, False<br>objHTTP.setRequestHeader “User-Agent”, “Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)”<br>objHTTP.send (“”)</p>
+<p>End Sub`</p>
+<p>现在就是如何把每个rid插入文档中</p>
+<p>1，在前端，利用这个函数readAsDataURL(),将文档进行base64加密，传入后端<br>2，在后端，通过这种更改rid，并且保存<br>`decodetest, _ := base64.StdEncoding.DecodeString(a.Content)</p>
+<p>content :=strings.Replace(string(decodetest),”url?rid=123”,”url?rid=”+m.RId,1)</p>
+<p>a.Content=base64.StdEncoding.EncodeToString([]byte(content))`<br>3，最重要的一步是，读取的文档，必须要经过重打包步骤，如下所示，50多k的文档变成了700多k，必须要用700多k的那个进行替换，50多k的读取的内容全为乱码，读取不到内容，这中间有什么变化，目前还不知道原因。<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/QQ%E6%88%AA%E5%9B%BE20210326173522.png"><br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/QQ%E6%88%AA%E5%9B%BE20210326173429.png"></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lllllx.top/2021/03/26/golang-bing-fa-you-jian-tan-tao/" data-id="cklj7s7i800001wqc1k93c4zm" class="article-share-link">
+      <a data-url="http://lllllx.top/2021/03/26/sy1fght8q7z0kufg/" data-id="ckmq463bs00006sqc92bwejkb" class="article-share-link">
         分享
       </a>
       
@@ -84,19 +88,10 @@
   
 <nav class="article-nav">
   
-  <a href="/2021/03/26/sy1fght8q7z0kufg/" class="article-nav-link">
-    <strong class="article-nav-caption">前一篇</strong>
-    <div class="article-nav-title">
-      
-      自动化钓鱼（2):文档类追踪
-      
-    </div>
-  </a>
   
-  
-  <a href="/2021/01/15/yzxchfsvwbiv8mqd/" class="article-nav-link">
+  <a href="/2021/03/26/golang-bing-fa-you-jian-tan-tao/" class="article-nav-link">
     <strong class="article-nav-caption">后一篇</strong>
-    <div class="article-nav-title">Apollo配置错误（cve-2020-15170）</div>
+    <div class="article-nav-title">自动化钓鱼(1):钓鱼时邮件如何批量发送</div>
   </a>
   
 </nav>

