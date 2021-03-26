@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <title>
-    钓鱼时邮件如何批量发送 |
+    自动化钓鱼(1):钓鱼时邮件如何批量发送 |
     
     freedom</title>
   
@@ -39,7 +39,7 @@
       
 
 <h1 class="article-title" itemprop="name">
-  钓鱼时邮件如何批量发送
+  自动化钓鱼(1):钓鱼时邮件如何批量发送
 </h1>
 
 
@@ -49,8 +49,8 @@
 
     
     <div class="article-meta">
-      <a href="/2021/02/23/golang-bing-fa-you-jian-tan-tao/" class="article-date">
-  <time datetime="2021-02-23T10:29:32.959Z" itemprop="datePublished">2021-02-23</time>
+      <a href="/2021/03/26/golang-bing-fa-you-jian-tan-tao/" class="article-date">
+  <time datetime="2021-03-26T09:14:13.000Z" itemprop="datePublished">2021-03-26</time>
 </a>
       
     </div>
@@ -67,12 +67,12 @@
       <p><strong>0x01  困境</strong><br>在做钓鱼邮件时，有时候需要发送的人过多，导致在邮件发送这个过程中花费过多时间。</p>
 <p><strong>0x02 解决思路</strong></p>
 <p>1，第一种可以用如下这种，直接在收件人中实现批量发送，但是有个问题是，这种情况实现批量发送，所有收件人的邮件内容都是一样，这种就不能实现每个人邮件的特殊化（因为需要在邮件中加入tracker，通过这个tracker来跟踪对应收件人对应邮件的状态），所以这种方法目前有问题。<br><code>msg.SetHeader(&quot;Bcc&quot;, mailto...</code></p>
-<p>2，第二种直接就是并发来发送，利用goruntine，每一个收件人对应一个goruntine。这种的问题就是需要自己设置smtp服务器可以接受的连接数，保证客户端到smtp有足够的连接来对应goruntine的数量，否则连接就会重置，造成发送不出去邮件<br>如下所示，activecall参数的解释<br><code>activeCall is an atomic int32; the low bit is whether Close has been called. the rest of the bits are the number of goroutines in Conn.Write.</code><br>为0时，代表连接正常，为1时，代表连接关闭。如果smtp的连接数小于goruntine的数量，就会造成连接关闭，activecall参数为1.<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/20210223200930444.png"><br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/20210223200930444.png"></p>
+<p>2，第二种直接就是并发来发送，利用goruntine，每一个收件人对应一个goruntine。还有两个问题需要注意：<br>1，就是需要自己设置smtp服务器可以接受的连接数，保证客户端到smtp有足够的连接来对应goruntine的数量，否则连接就会重置，造成发送不出去邮件<br>2，如上所示，如果连接数不够，建议分批发送，并且需要后面的一批需要等到前面那一批发送完成，否则连接重置<br>如下所示，activecall参数的解释<br><code>activeCall is an atomic int32; the low bit is whether Close has been called. the rest of the bits are the number of goroutines in Conn.Write.</code><br>为0时，代表连接正常，为1时，代表连接关闭。如果smtp的连接数小于goruntine的数量，就会造成连接关闭，activecall参数为1.<br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/20210223200930444.png"><br><img src="https://raw.githubusercontent.com/lllllx-simpleman/picture/master/20210223200930444.png"></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lllllx.top/2021/02/23/golang-bing-fa-you-jian-tan-tao/" data-id="cklj7s7i800001wqc1k93c4zm" class="article-share-link">
+      <a data-url="http://lllllx.top/2021/03/26/golang-bing-fa-you-jian-tan-tao/" data-id="cklj7s7i800001wqc1k93c4zm" class="article-share-link">
         分享
       </a>
       

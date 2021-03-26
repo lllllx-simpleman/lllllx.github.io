@@ -71,7 +71,7 @@
       
 
 <h2 itemprop="name">
-  <a class="article-title" href="/2021/02/23/golang-bing-fa-you-jian-tan-tao/">钓鱼时邮件如何批量发送</a>
+  <a class="article-title" href="/2021/03/26/golang-bing-fa-you-jian-tan-tao/">自动化钓鱼(1):钓鱼时邮件如何批量发送</a>
 </h2>
 
 
@@ -81,8 +81,8 @@
 
     
     <div class="article-meta">
-      <a href="/2021/02/23/golang-bing-fa-you-jian-tan-tao/" class="article-date">
-  <time datetime="2021-02-23T10:29:32.959Z" itemprop="datePublished">2021-02-23</time>
+      <a href="/2021/03/26/golang-bing-fa-you-jian-tan-tao/" class="article-date">
+  <time datetime="2021-03-26T09:14:13.000Z" itemprop="datePublished">2021-03-26</time>
 </a>
       
     </div>
@@ -102,16 +102,17 @@
 1，第一种可以用如下这种，直接在收件人中实现批量发送，但是有个问题是，这种情况实现批量发送，所有收件人的邮件内容都是一样，这种就不能实现每个人邮件的特殊化（因为需要在邮件中加入tracker，通过这个tracker来跟踪对应收件人对应邮件的状态），所以这种方法目前有问题。
 msg.SetHeader("Bcc", mailto...
 
-2，第二种直接就是并发来发送，利用goruntine，每一个收件人对应一个goruntine。这种的问题就是需要自己设置smtp服务器可以接受
+2，第二种直接就是并发来发送，利用goruntine，每一个收件人对应一个goruntine。还有两个问题需要注意：
+1，就是需要自己设置sm
       
-      <a class="article-more-link" href="/2021/02/23/golang-bing-fa-you-jian-tan-tao/">
+      <a class="article-more-link" href="/2021/03/26/golang-bing-fa-you-jian-tan-tao/">
         阅读全文...
       </a>
       
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://lllllx.top/2021/02/23/golang-bing-fa-you-jian-tan-tao/" data-id="cklj7s7i800001wqc1k93c4zm" class="article-share-link">
+      <a data-url="http://lllllx.top/2021/03/26/golang-bing-fa-you-jian-tan-tao/" data-id="cklj7s7i800001wqc1k93c4zm" class="article-share-link">
         分享
       </a>
       
